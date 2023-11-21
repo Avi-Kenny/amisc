@@ -92,3 +92,42 @@ chk <- function(num, msg="") {
 
 
 
+#' Memoise a function
+#'
+#' @description This is a lightweight and faster version of the \code{memoise}
+#'     function from the \code{memoise} package. The speed comes at the cost of
+#'     fewer error handling checks.
+#' @param fnc A function to be memoised
+#' @return A memoised version of function
+#' @examples
+#' f <- function(x) { Sys.sleep(1); return(x^2); }
+#' f_mem <- memoise2(f)
+#' system.time(f_mem(4)) # First call
+#' system.time(f_mem(4)) # Second call
+#' @export
+memoise2 <- function(fnc) {
+
+  htab <- new.env()
+  ..new_fnc <- function() {
+    ..e <- parent.env(environment())
+    ..mc <- lapply(as.list(match.call())[-1L], eval, parent.frame())
+    key <- rlang::hash(..mc)
+    val <- ..e$htab[[key]]
+    if (is.null(val)) {
+      val <- do.call(..e$fnc, ..mc)
+      ..e$htab[[key]] <- val
+    }
+    return(val)
+  }
+
+  # Set formals and set up environment
+  formals(..new_fnc) <- formals(fnc)
+  f_env <- new.env(parent=environment(fnc))
+  f_env$arg_names <- names(formals(fnc))
+  f_env$htab <- htab
+  f_env$fnc <- fnc
+  environment(..new_fnc) <- f_env
+
+  return(..new_fnc)
+
+}

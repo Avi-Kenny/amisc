@@ -131,3 +131,65 @@ memoise2 <- function(fnc) {
   return(..new_fnc)
 
 }
+
+#' Visualize one or more one-dimensional distributions
+#'
+#' @description Produce a grid of one-dimensional jittered scatterplots.
+#' @param val A vector of numeric data values
+#' @param grp A vector denoting groups
+#' @param ref_vals A named vector denoting reference values to be overlaid on
+#'     plot; see examples
+#' @param common_scale If TRUE, a common axis scale is used for all groups
+#' @return A ggplot2 object
+#' @examples
+#' data(iris)
+#' dis_plots(
+#'   val = iris$Petal.Length,
+#'   grp = iris$Species
+#' )
+#' dis_plots(
+#'   val = iris$Petal.Length,
+#'   grp = iris$Species,
+#'   ref_vals = c(setosa=1.5, versicolor=4, virginica=5.5)
+#' )
+#' @export
+dis_plots <- function(val, grp, ref_vals=NULL, common_scale=TRUE) {
+
+  df_plot <- data.frame(
+    x = val,
+    grp = grp,
+    y = rep(0, length(val))
+  )
+
+  # Export 8" x 5"
+  plot <- ggplot2::ggplot(df_plot, ggplot2::aes(x=x, y=y, color=factor(grp)))
+  if (!is.null(ref_vals)) {
+    df_ref <- data.frame(
+      grp = names(ref_vals),
+      x = as.numeric(ref_vals)
+    )
+    plot <- plot + ggplot2::geom_vline(ggplot2::aes(xintercept=x), df_ref,
+                                       alpha=0.5) # linetype="dashed"
+  }
+  plot <- plot + ggplot2::geom_jitter(width=0, height=1, alpha=0.3, size=3) +
+    ggplot2::labs(x=NULL, y=NULL) +
+    ggplot2::ylim(-2,2) +
+    ggplot2::theme(
+      axis.text.y = ggplot2::element_blank(),
+      axis.ticks.y = ggplot2::element_blank(),
+      panel.grid.major.y = ggplot2::element_blank(),
+      panel.grid.minor.y = ggplot2::element_blank(),
+      strip.text.y.left = ggplot2::element_text(angle=0),
+      legend.position = "none"
+    )
+
+  if (common_scale) {
+    plot <- plot + ggplot2::facet_wrap(~grp, ncol=1, strip.position="left")
+  } else {
+    plot <- plot + ggplot2::facet_wrap(~grp, ncol=1, strip.position="left",
+                                       scales="free_x")
+  }
+
+  return(plot)
+
+}

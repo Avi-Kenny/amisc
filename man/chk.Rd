@@ -2,8 +2,7 @@
 % Please edit documentation in R/misc_functions.R
 \name{chk}
 \alias{chk}
-\title{Helper function for debugging; prints an integer, timestamp, and optional
-message}
+\title{Debugging checks}
 \usage{
 chk(num, msg = "")
 }

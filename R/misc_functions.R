@@ -59,13 +59,6 @@ deriv_expit <- function(x) { exp(x) / ((1+exp(x))^2) }
 
 
 
-#' Helper function for debugging; prints an integer, timestamp, and optional
-#'     message
-#'
-#' @noRd
-
-
-
 #' Debugging checks
 #'
 #' @description A helper function for debugging that parses and outputs a
@@ -153,7 +146,7 @@ memoise2 <- function(fnc) {
 #'   ref_vals = c(setosa=1.5, versicolor=4, virginica=5.5)
 #' )
 #' @export
-dis_plots <- function(val, grp, ref_vals=NULL, common_scale=TRUE) {
+dis_plot <- function(val, grp, ref_vals=NULL, common_scale=TRUE) {
 
   df_plot <- data.frame(
     x = val,

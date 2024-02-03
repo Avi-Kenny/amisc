@@ -186,3 +186,17 @@ dis_plot <- function(val, grp, ref_vals=NULL, common_scale=TRUE) {
   return(plot)
 
 }
+
+
+
+#' Return a vector of colorblind-friendly colors
+#'
+#' @description Returns a vector of colorblind-friendly colors
+#' @return A vector of colorblind-friendly colors
+#' @examples
+#' cb_colors()
+#' @export
+cb_colors <- function() {
+  c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
+    "#0072B2", "#D55E00", "#CC79A7", "#999999")
+}
